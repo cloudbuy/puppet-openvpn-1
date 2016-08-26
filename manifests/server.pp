@@ -539,9 +539,13 @@ define openvpn::server(
     if $tls_server and !$extca_enabled {
       $real_tls_server = $tls_server
     } elsif ($extca_enabled and $extca_dh_file) or (!$extca_enabled) {
-      $real_tls_server = $proto ? {
-        /tcp/   => true,
-        default => false
+      if $tls_server {
+        $real_tls_server = $tls_server
+      } else {
+        $real_tls_server = $proto ? {
+          /tcp/   => true,
+          default => false
+        }
       }
     } else {
       $real_tls_server = false
