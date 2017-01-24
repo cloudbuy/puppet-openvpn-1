@@ -87,9 +87,14 @@ define openvpn::client_specific_config(
   $redirect_gateway = false,
 ) {
 
-  Openvpn::Server[$server] ->
-  Openvpn::Client[$name] ->
-  Openvpn::Client_specific_config[$name]
+  if (getparam(Openvpn::Server[$server], 'extca_enabled')) {
+    Openvpn::Server[$server] ->
+    Openvpn::Client_specific_config[$name]
+  } else {
+    Openvpn::Server[$server] ->
+    Openvpn::Client[$name] ->
+    Openvpn::Client_specific_config[$name]
+  }
 
   file { "${::openvpn::params::etc_directory}/openvpn/${server}/client-configs/${name}":
     ensure  => $ensure,
