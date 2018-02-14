@@ -1,10 +1,101 @@
 # Changelog
 
-## Next Version
+All notable changes to this project will be documented in this file.
+Each new release typically also includes the latest modulesync defaults.
+These should not affect the functionality of the module.
 
-* Fix broken namespecific rclink ([#209](https://github.com/luxflux/puppet-openvpn/pull/209))
+## [v7.1.0](https://github.com/voxpupuli/puppet-openvpn/tree/v7.1.0) (2018-01-12)
 
-## 4.0.1
+[Full Changelog](https://github.com/voxpupuli/puppet-openvpn/compare/v7.0.0...v7.1.0)
+
+**Implemented enhancements:**
+
+- add openvpn::deploy::\(export/client\) [\#261](https://github.com/voxpupuli/puppet-openvpn/pull/261) ([to-kn](https://github.com/to-kn))
+
+**Closed issues:**
+
+- Elegant solution for renewing CRL [\#236](https://github.com/voxpupuli/puppet-openvpn/issues/236)
+- Install openvpn & certs also on client nodes [\#231](https://github.com/voxpupuli/puppet-openvpn/issues/231)
+
+**Merged pull requests:**
+
+- release 7.0.0 [\#260](https://github.com/voxpupuli/puppet-openvpn/pull/260) ([bastelfreak](https://github.com/bastelfreak))
+
+## [v7.0.0](https://github.com/voxpupuli/puppet-openvpn/tree/v7.0.0) (2018-01-06)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openvpn/compare/v6.0.0...v7.0.0)
+
+**Breaking changes:**
+
+- add datatypes to all params [\#259](https://github.com/voxpupuli/puppet-openvpn/pull/259) ([to-kn](https://github.com/to-kn))
+
+**Implemented enhancements:**
+
+- Add crl renewal [\#256](https://github.com/voxpupuli/puppet-openvpn/pull/256) ([to-kn](https://github.com/to-kn))
+
+**Merged pull requests:**
+
+- release 6.0.0 [\#254](https://github.com/voxpupuli/puppet-openvpn/pull/254) ([bastelfreak](https://github.com/bastelfreak))
+
+## [v6.0.0](https://github.com/voxpupuli/puppet-openvpn/tree/v6.0.0) (2017-11-21)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openvpn/compare/v5.0.0...v6.0.0)
+
+**Breaking changes:**
+
+- Turned up options for encryption [\#223](https://github.com/voxpupuli/puppet-openvpn/pull/223) ([mcrmonkey](https://github.com/mcrmonkey))
+
+**Fixed bugs:**
+
+- Doesn't work properly with "remote" in openvpn::server [\#252](https://github.com/voxpupuli/puppet-openvpn/issues/252)
+- Correct 252 [\#253](https://github.com/voxpupuli/puppet-openvpn/pull/253) ([cjeanneret](https://github.com/cjeanneret))
+
+**Merged pull requests:**
+
+- replace validate\_\* with datatypes in init.pp [\#251](https://github.com/voxpupuli/puppet-openvpn/pull/251) ([bastelfreak](https://github.com/bastelfreak))
+- release 5.0.0 [\#249](https://github.com/voxpupuli/puppet-openvpn/pull/249) ([bastelfreak](https://github.com/bastelfreak))
+
+## [v5.0.0](https://github.com/voxpupuli/puppet-openvpn/tree/v5.0.0) (2017-11-13)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openvpn/compare/v4.1.1...v5.0.0)
+
+**Breaking changes:**
+
+- Breaking: Update puppet, stdlib, and concat requirements in prep for release [\#242](https://github.com/voxpupuli/puppet-openvpn/pull/242) ([wyardley](https://github.com/wyardley))
+
+**Implemented enhancements:**
+
+- Upped version requirement of concat and added Debian 9 \(stretch\) [\#243](https://github.com/voxpupuli/puppet-openvpn/pull/243) ([hp197](https://github.com/hp197))
+
+**Merged pull requests:**
+
+- Release 4.1.1 [\#241](https://github.com/voxpupuli/puppet-openvpn/pull/241) ([wyardley](https://github.com/wyardley))
+
+## [v4.1.1](https://github.com/voxpupuli/puppet-openvpn/tree/v4.1.1) (2017-10-07)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openvpn/compare/v4.1.0...v4.1.1)
+
+**Merged pull requests:**
+
+- Updates for 4.1.0 release [\#239](https://github.com/voxpupuli/puppet-openvpn/pull/239) ([wyardley](https://github.com/wyardley))
+
+## [v4.1.0](https://github.com/voxpupuli/puppet-openvpn/tree/v4.1.0) (2017-10-06)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-openvpn/compare/4.0.1...v4.1.0)
+
+**Closed issues:**
+
+- Download config has incorrect protocol [\#219](https://github.com/voxpupuli/puppet-openvpn/issues/219)
+- Error while evaluating a Function Call, cannot currently create client configs when corresponding openvpn::server is extca\_enabled [\#199](https://github.com/voxpupuli/puppet-openvpn/issues/199)
+
+**Merged pull requests:**
+
+- Fix auth tls ovpn profile and ldap auth file perms [\#220](https://github.com/voxpupuli/puppet-openvpn/pull/220) ([szponek](https://github.com/szponek))
+- Correct path of openvpn-auth-pam.so on modern Debian distros. [\#217](https://github.com/voxpupuli/puppet-openvpn/pull/217) ([oc243](https://github.com/oc243))
+- Add rhel6 support for ldap auth plugin [\#215](https://github.com/voxpupuli/puppet-openvpn/pull/215) ([miguelwhite](https://github.com/miguelwhite))
+- fix broken namespecific rclink [\#209](https://github.com/voxpupuli/puppet-openvpn/pull/209) ([alxwr](https://github.com/alxwr))
+
+## 4.0.1 (2016-09-25)
 
 * Fix namespecific_rclink variable warning for non BSD systems ([#214](https://github.com/luxflux/puppet-openvpn/pull/214))
 
@@ -117,3 +208,6 @@ This will be the last version of version 2.x with new features.
 ## Before
 
 * A lot of stuff I don't know anymore :disappointed:
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*

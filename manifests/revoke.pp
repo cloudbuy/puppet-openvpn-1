@@ -47,15 +47,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-define openvpn::revoke(
-  $server,
+define openvpn::revoke (
+  String $server,
 ) {
 
-  Openvpn::Server[$server] ->
-  Openvpn::Revoke[$name]
+  Openvpn::Server[$server]
+  -> Openvpn::Revoke[$name]
 
-  Openvpn::Client[$name] ->
-  Openvpn::Revoke[$name]
+  Openvpn::Client[$name]
+  -> Openvpn::Revoke[$name]
 
   $etc_directory = $::openvpn::params::etc_directory
 

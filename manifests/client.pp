@@ -57,11 +57,11 @@
 #
 # [*cipher*]
 #   String,  Cipher to use for packet encryption
-#   Default: None
+#   Default: AES-256-CBC
 #
 # [*tls_cipher*]
 #   String, TLS Ciphers to use
-#   Default: None
+#   Default: TLS-DHE-RSA-WITH-AES-256-GCM-SHA384:TLS-DHE-RSA-WITH-AES-256-CBC-SHA256:TLS-DHE-RSA-WITH-AES-128-GCM-SHA256:TLS-DHE-RSA-WITH-AES-128-CBC-SHA256
 #
 # [*resolv_retry*]
 #   Integer/String. How many seconds should the openvpn client try to resolve
@@ -184,59 +184,59 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-define openvpn::client(
-  $server,
-  $compression          = 'comp-lzo',
-  $dev                  = 'tun',
-  $mute                 = '20',
-  $mute_replay_warnings = true,
-  $nobind               = true,
-  $persist_key          = true,
-  $persist_tun          = true,
-  $port                 = '1194',
-  $proto                = 'tcp',
-  $remote_host          = $::fqdn,
-  $resolv_retry         = 'infinite',
-  $auth_retry           = 'none',
-  $verb                 = '3',
-  $pam                  = false,
-  $cipher               = undef,
-  $tls_cipher           = undef,
-  $authuserpass         = false,
-  $setenv               = {},
-  $setenv_safe          = {},
-  $up                   = '',
-  $down                 = '',
-  $tls_auth             = false,
-  $x509_name            = undef,
-  $sndbuf               = undef,
-  $rcvbuf               = undef,
-  $shared_ca            = undef,
-  $custom_options       = {},
-  $expire               = undef,
-  $readme               = undef,
-  $pull                 = false,
-  $server_extca_enabled = false
+define openvpn::client (
+  String $server,
+  String $compression                         = 'comp-lzo',
+  String $dev                                 = 'tun',
+  Integer $mute                               = 20,
+  Boolean $mute_replay_warnings               = true,
+  Boolean $nobind                             = true,
+  Boolean $persist_key                        = true,
+  Boolean $persist_tun                        = true,
+  String $port                                = '1194',
+  String $proto                               = 'tcp',
+  Variant[String, Array[String]] $remote_host = $::fqdn,
+  String $resolv_retry                        = 'infinite',
+  String $auth_retry                          = 'none',
+  String $verb                                = '3',
+  Boolean $pam                                = false,
+  String $cipher                              = 'AES-256-CBC',
+  String $tls_cipher                          = 'TLS-DHE-RSA-WITH-AES-256-GCM-SHA384:TLS-DHE-RSA-WITH-AES-256-CBC-SHA256:TLS-DHE-RSA-WITH-AES-128-GCM-SHA256:TLS-DHE-RSA-WITH-AES-128-CBC-SHA256',
+  Boolean $authuserpass                       = false,
+  Hash $setenv                                = {},
+  Hash $setenv_safe                           = {},
+  String $up                                  = '',
+  String $down                                = '',
+  Boolean $tls_auth                           = false,
+  Optional[String] $x509_name                 = undef,
+  Optional[Integer] $sndbuf                   = undef,
+  Optional[Integer] $rcvbuf                   = undef,
+  Optional[String] $shared_ca                 = undef,
+  Hash $custom_options                        = {},
+  Optional[Integer] $expire                   = undef,
+  Optional[String] $readme                    = undef,
+  Boolean $pull                               = false,
+  Boolean $server_extca_enabled               = false
 ) {
 
   if $pam {
     warning('Using $pam is deprecated. Use $authuserpass instead!')
   }
 
-  Openvpn::Server[$server] ->
-  Openvpn::Client[$name]
+  Openvpn::Server[$server]
+  -> Openvpn::Client[$name]
 
   $extca_enabled = pick(getparam(Openvpn::Server[$server], 'extca_enabled'), $server_extca_enabled)
   if $extca_enabled { fail('cannot currently create client configs when corresponding openvpn::server is extca_enabled') }
 
   $ca_name = pick($shared_ca, $server)
-  Openvpn::Ca[$ca_name] ->
-  Openvpn::Client[$name]
+  Openvpn::Ca[$ca_name]
+  -> Openvpn::Client[$name]
 
   $etc_directory = $::openvpn::params::etc_directory
 
   if $expire {
-    if is_integer($expire){
+    if is_integer($expire) {
       $env_expire = "KEY_EXPIRE=${expire}"
     } else {
       warning("Custom expiry time ignored: only integer is accepted but ${expire} is given.")
@@ -253,9 +253,9 @@ define openvpn::client(
   }
 
   file { [ "${etc_directory}/openvpn/${server}/download-configs/${name}",
-          "${etc_directory}/openvpn/${server}/download-configs/${name}/keys",
-          "${etc_directory}/openvpn/${server}/download-configs/${name}/keys/${name}" ]:
-    ensure  => directory,
+    "${etc_directory}/openvpn/${server}/download-configs/${name}/keys",
+    "${etc_directory}/openvpn/${server}/download-configs/${name}/keys/${name}" ]:
+    ensure => directory,
   }
 
   file { "${etc_directory}/openvpn/${server}/download-configs/${name}/keys/${name}/${name}.crt":
@@ -290,7 +290,7 @@ define openvpn::client(
   }
 
   if $readme {
-    file {"${etc_directory}/openvpn/${server}/download-configs/${name}/README":
+    file { "${etc_directory}/openvpn/${server}/download-configs/${name}/README":
       ensure  => file,
       owner   => root,
       group   => root,
@@ -302,7 +302,7 @@ define openvpn::client(
 
   file {
     "${etc_directory}/openvpn/${server}/download-configs/${name}.tblk":
-      ensure  => directory;
+      ensure => directory;
 
     "${etc_directory}/openvpn/${server}/download-configs/${name}.tblk/${name}.ovpn":
       ensure  => link,
@@ -311,7 +311,7 @@ define openvpn::client(
         Concat["${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn"],
         File["${etc_directory}/openvpn/${server}/download-configs/${name}.tblk"],
       ],
-      before =>  Exec["tar the thing ${server} with ${name}"];
+      before  => Exec["tar the thing ${server} with ${name}"];
   }
 
   file { "${etc_directory}/openvpn/${server}/download-configs/${name}/${name}.conf":
@@ -349,80 +349,80 @@ define openvpn::client(
   concat::fragment { "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn/client_config":
     target  => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
     content => template('openvpn/client.erb'),
-    order   => '01'
+    order   => '01',
   }
 
   concat::fragment { "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn/ca_open_tag":
     target  => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
     content => "# Authentication \n<ca>\n",
-    order   => '02'
+    order   => '02',
   }
 
   concat::fragment { "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn/ca":
     target => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
     source => "${etc_directory}/openvpn/${server}/download-configs/${name}/keys/${name}/ca.crt",
-    order  => '03'
+    order  => '03',
   }
 
   concat::fragment { "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn/ca_close_tag":
     target  => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
     content => "</ca>\n",
-    order   => '04'
+    order   => '04',
   }
 
   concat::fragment { "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn/key_open_tag":
     target  => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
     content => "<key>\n",
-    order   => '05'
+    order   => '05',
   }
 
   concat::fragment { "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn/key":
     target => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
     source => "${etc_directory}/openvpn/${server}/download-configs/${name}/keys/${name}/${name}.key",
-    order  => '06'
+    order  => '06',
   }
 
   concat::fragment { "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn/key_close_tag":
     target  => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
     content => "</key>\n",
-    order   => '07'
+    order   => '07',
   }
 
   concat::fragment { "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn/cert_open_tag":
     target  => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
     content => "<cert>\n",
-    order   => '08'
+    order   => '08',
   }
 
   concat::fragment { "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn/cert":
     target => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
     source => "${etc_directory}/openvpn/${server}/download-configs/${name}/keys/${name}/${name}.crt",
-    order  => '09'
+    order  => '09',
   }
 
   concat::fragment { "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn/cert_close_tag":
     target  => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
     content => "</cert>\n",
-    order   => '10'
+    order   => '10',
   }
 
   if $tls_auth {
     concat::fragment { "/etc/openvpn/${server}/download-configs/${name}.ovpn/tls_auth_open_tag":
       target  => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
       content => "<tls-auth>\n",
-      order   => '11'
+      order   => '11',
     }
 
     concat::fragment { "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn/tls_auth":
       target => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
       source => "${etc_directory}/openvpn/${server}/download-configs/${name}/keys/${name}/ta.key",
-      order  => '12'
+      order  => '12',
     }
 
     concat::fragment { "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn/tls_auth_close_tag":
       target  => "${etc_directory}/openvpn/${server}/download-configs/${name}.ovpn",
-      content => "</tls-auth>\n",
-      order   => '13'
+      content => "</tls-auth>\nkey-direction 1\n",
+      order   => '13',
     }
   }
 }

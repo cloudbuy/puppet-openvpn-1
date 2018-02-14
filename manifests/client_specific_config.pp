@@ -76,15 +76,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-define openvpn::client_specific_config(
-  $server,
-  $ensure           = present,
-  $iroute           = [],
-  $iroute_ipv6      = [],
-  $route            = [],
-  $ifconfig         = false,
-  $dhcp_options     = [],
-  $redirect_gateway = false,
+define openvpn::client_specific_config (
+  String $server,
+  Enum[present, absent] $ensure      = present,
+  Array[String] $iroute              = [],
+  Array[String] $iroute_ipv6         = [],
+  Array[String] $route               = [],
+  Variant[Boolean, String] $ifconfig = false,
+  Array[String]  $dhcp_options       = [],
+  Boolean $redirect_gateway          = false,
 ) {
 
   if (getparam(Openvpn::Server[$server], 'extca_enabled')) {
@@ -98,7 +98,7 @@ define openvpn::client_specific_config(
 
   file { "${::openvpn::params::etc_directory}/openvpn/${server}/client-configs/${name}":
     ensure  => $ensure,
-    content => template('openvpn/client_specific_config.erb')
+    content => template('openvpn/client_specific_config.erb'),
   }
 
 }
